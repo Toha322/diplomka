@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Genre(models.Model):
     name = models.CharField(
         max_length=100,
@@ -12,6 +13,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
+
 
 class Tags(models.Model):
     name = models.CharField(
@@ -75,5 +77,23 @@ class Game(models.Model):
         blank=True,
         null=True
     )
-    price=models.PositiveIntegerField(verbose_name='Цена',related_name='price')
-
+    current_price = models.PositiveIntegerField(
+        verbose_name='Цена'
+    )
+    default_price = models.PositiveIntegerField(
+        verbose_name='В процентах',
+        null=True,
+        blank=True,
+    )
+    added_at = models.DateTimeField(
+        verbose_name='Дата добавления',
+        auto_now_add=True
+    )
+    downloads = models.PositiveIntegerField(
+        verbose_name='Кол-во скачиваний',
+        default=0
+    )
+    size = models.FloatField(
+        verbose_name='Размер',
+        default=0.0
+    )

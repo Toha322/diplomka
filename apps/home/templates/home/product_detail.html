@@ -2,138 +2,222 @@
 {% load static %}
 
 {% block title %}
-Shop
+    Shop
 {% endblock %}
 
 {% block content %}
-  <div class="page-heading header-text">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <h3>Modern Warfare® II</h3>
-          <span class="breadcrumb"><a href="#">Home</a>  >  <a href="#">Shop</a>  >  Assasin Creed</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="single-product section">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="left-image">
-            <img src="../static/assets/images/single-game.jpg" alt="">
-          </div>
-        </div>
-        <div class="col-lg-6 align-self-center">
-          <h4>Call of Duty®: Modern Warfare® II</h4>
-          <span class="price"><em>$28</em> $22</span>
-          <p>LUGX Gaming Template is based on the latest Bootstrap 5 CSS framework. This template is provided by TemplateMo and it is suitable for your gaming shop ecommerce websites. Feel free to use this for any purpose. Thank you.</p>
-          <form id="qty" action="#">
-            <input type="qty" class="form-control" id="1" aria-describedby="quantity" placeholder="1">
-            <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
-          </form>
-          <ul>
-            <li><span>Game ID:</span> COD MMII</li>
-            <li><span>Genre:</span> <a href="#">Action</a>, <a href="#">Team</a>, <a href="#">Single</a></li>
-            <li><span>Multi-tags:</span> <a href="#">War</a>, <a href="#">Battle</a>, <a href="#">Royal</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-12">
-          <div class="sep"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="more-info">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="tabs-content">
+    <div class="page-heading header-text">
+        <div class="container">
             <div class="row">
-              <div class="nav-wrapper ">
-                <ul class="nav nav-tabs" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews (3)</button>
-                  </li>
-                </ul>
-              </div>
-              <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-                  <p>You can search for more templates on Google Search using keywords such as "templatemo digital marketing", "templatemo one-page", "templatemo gallery", etc. Please tell your friends about our website. If you need a variety of HTML templates, you may visit Tooplate and Too CSS websites.</p>
-                  <br>
-                  <p>Coloring book air plant shabby chic, crucifix normcore raclette cred swag artisan activated charcoal. PBR&B fanny pack pok pok gentrify truffaut kitsch helvetica jean shorts edison bulb poutine next level humblebrag la croix adaptogen. Hashtag poke literally locavore, beard marfa kogi bruh artisan succulents seitan tonx waistcoat chambray taxidermy. Same cred meggings 3 wolf moon lomo irony cray hell of bitters asymmetrical gluten-free art party raw denim chillwave tousled try-hard succulents street art.</p>
+                <div class="col-lg-12">
+                    <h3>{{ game.name }}</h3>
+                    <span class="breadcrumb"><a href="{% url 'index' %}">Home</a>  >  <a
+                            href="{% url 'shop' %}">Shop</a>  > {{ game.name }}</span>
                 </div>
-                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                  <p>Coloring book air plant shabby chic, crucifix normcore raclette cred swag artisan activated charcoal. PBR&B fanny pack pok pok gentrify truffaut kitsch helvetica jean shorts edison bulb poutine next level humblebrag la croix adaptogen. <br><br>Hashtag poke literally locavore, beard marfa kogi bruh artisan succulents seitan tonx waistcoat chambray taxidermy. Same cred meggings 3 wolf moon lomo irony cray hell of bitters asymmetrical gluten-free art party raw denim chillwave tousled try-hard succulents street art.</p>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="section categories related-games">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="section-heading">
-            <h6>Action</h6>
-            <h2>Related Games</h2>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="main-button">
-            <a href="shop.html">View All</a>
-          </div>
-        </div>
-        <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../static/assets/images/categories-01.jpg" alt=""></a>
+    <div class="single-product section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="left-image">
+
+                        {% if game.preview %}
+                            <img src="{{ game.preview.url }}" alt="">
+                        {% else %}
+                            <img src="{% static 'path/to/default/image.png' %}" alt="Default Image">
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="col-lg-6 align-self-center">
+                    <h4>{{ game.name }}</h4>
+                    <span class="price"><em>$28</em> $22</span>
+                    <p>{{ game.short_description }}</p>
+                    <form id="qty" method="POST" action="{% url 'add_to_cart' game.id request.user.id %}">
+                        {% csrf_token %}
+
+                        {% if user.is_authenticated %}
+                            {% if user_cart_item %}
+                                <button type="submit"><i class="fa fa-shopping-bag"></i> already in cart</button>
+                            {% else %}
+                                <button type="submit"><i class="fa fa-shopping-bag"></i> GO TO CART</button>
+                            {% endif %}
+                        {% else %}
+                            <p>
+                                <b>Только авторизованные пользователи могут добавлять в корзину...</b>
+                                <a href="{% url 'login' %}">Войти</a>
+                            </p>
+                        {% endif %}
+                    </form>
+
+                    <ul>
+                        <li><span>Game ID:</span> {{ game.pk }}</li>
+                        <li><span>Genre:</span>
+                            {% for genre in genres %}
+
+                                <a href="{% url 'shop_by_genre' genre.slug %}">{{ genre.name }}</a>,
+                            {% endfor %}
+
+                        <li><span>Multi-tags:</span>
+                            {% for tag in tags %}
+                                <h>{{ tag.name }}</h>,
+                            {% endfor %}
+                        </li>
+                        {% if user.is_authenticated %}
+                            {% if user_wish_item %}
+                                <!-- Кнопка "Удалить из желаемого", если элемент уже в библиотеке -->
+                                <a href="{% url 'wish' %}"
+                                   class="bi bi-bookmark-heart-fill add-to-wishlist"
+                                   data-action="remove"
+                                   data-game-id="{{ game.pk }}">
+                                    УЖЕ желаемое
+                                </a>
+                            {% else %}
+                                <!-- Кнопка "Добавить в желаемое", если элемента нет в библиотеке -->
+                                <a href="{% url 'add_to_wish_lib' game.id request.user.id %}"
+                                   class="bi bi-bookmark-heart-fill add-to-wishlist"
+                                   data-action="add"
+                                   data-game-id="{{ game.pk }}">
+                                    Добавить в желаемое
+                                </a>
+                            {% endif %}
+                        {% endif %}
+
+
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    <div class="sep"></div>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../static/assets/images/categories-05.jpg" alt=""></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../static/assets/images/categories-03.jpg" alt=""></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../static/assets/images/categories-04.jpg" alt=""></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../static/assets/images/categories-05.jpg" alt=""></a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
+
+    <div class="more-info">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="tabs-content">
+                        <div class="row">
+                            <div class="nav-wrapper ">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="description-tab" data-bs-toggle="tab"
+                                                data-bs-target="#description" type="button" role="tab"
+                                                aria-controls="description" aria-selected="true">Description
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
+                                                data-bs-target="#reviews" type="button" role="tab"
+                                                aria-controls="reviews" aria-selected="false">Reviews
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="description" role="tabpanel"
+                                     aria-labelledby="description-tab">
+                                    <p>{{ game.full_description }}</p>
+
+                                </div>
+                                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                                    <h4>Комментарии</h4>
+
+                                    {% for comment in comments %}
+                                        <div class="comment">
+                                            <p><strong>{{ comment.author.username }}</strong> ({{ comment.created_at }})
+                                            </p>
+                                            <p>{{ comment.text }}</p>
+                                        </div>
+                                    {% empty %}
+                                        <p>Еще нет комментариев.</p>
+                                    {% endfor %}
+
+                                    <!-- Пагинация для комментариев -->
+                                    <div class="pagination">
+        <span class="step-links">
+            {% if comments.has_previous %}
+                <a href="?page=1">&lt;</a>  <!-- Первая страница -->
+                <a href="?page={{ comments.previous_page_number }}">Предыдущая</a>
+            {% else %}
+                <span class="disabled">&lt;</span>
+            {% endif %}
+
+            <!-- Номера страниц -->
+            {% for num in comments.paginator.page_range %}
+                {% if comments.number == num %}
+                    <span class="current">{{ num }}</span>  <!-- Текущая страница -->
+                {% else %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if comments.has_next %}
+                <a href="?page={{ comments.next_page_number }}">Следующая</a>
+                <a href="?page={{ comments.paginator.num_pages }}"> &gt;</a>  <!-- Последняя страница -->
+            {% else %}
+                <span class="disabled">&gt;</span>
+            {% endif %}
+        </span>
+                                    </div>
+
+                                    {% if request.user.is_authenticated %}
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            <button class="btn btn-dark mt-4">Отправить</button>
+                                        </form>
+                                    {% else %}
+                                        <p>
+                                            <b>Только авторизованные пользователи могут оставлять комментарии...</b>
+                                            <a href="{% url 'login' %}">Войти</a>
+                                        </p>
+                                    {% endif %}
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section categories related-games">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="section-heading">
+                        <h2> Games From {{ studio.name }}</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="main-button">
+                        <a href="{% url 'shop_by_studio' studio.slug %}">View All</a>
+                    </div>
+                </div>
+                {% for related_game in related_games %}
+                    <div class="col-lg col-sm-6 col-xs-12">
+                        <div class="item">
+                            <h4>{{ related_game.name }}</h4>
+                            <div class="thumb">
+                                <a href="{% url 'product' related_game.pk %}">
+                                    {% if related_game.preview %}
+                                        <img src="{{ related_game.preview.url }}" alt="{{ related_game.name }}">
+                                    {% else %}
+                                        <img src="{% static 'default-image.jpg' %}" alt="No preview available">
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

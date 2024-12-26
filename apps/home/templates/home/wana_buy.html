@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}
-    {{ user.name }}
+    Wishlist
 {% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
-        {% for item in request.user.game_library.first.game_library_items.all %}
+        {% for item in request.user.wish_library.first.wish_library_items.all %}
             {{ item }}
         {% endfor %}
-        {% for item in request.user.game_library.first.game_library_items.all %}
+        {% for item in request.user.wish_library.first.wish_library_items.all %}
             <div class="item">
                 <ul>
                     {% if item.game.preview %}
@@ -32,7 +32,7 @@
 
                         ">
                             {% if not item.is_downloaded %}
-                                <a href="{% url 'dell_from_cart' item.id %}">Buy</a>
+                                <a href="{% url 'cart' item.id request.user.id %}">Buy</a>
 
                             {% else %}
 
@@ -40,10 +40,9 @@
 
 
                         </div>
-                        <a href="{% url 'dell_from_cart' item.id %}">Remove from cart</a>
+                        <a href="{% url 'dell_from_wish' item.id %}">Remove from wish</a>
 
 
-                        <a href="{% url 'product' item.id %}">Detail</a>
                     </li>
                 </ul>
             </div>
@@ -51,6 +50,6 @@
     {% else %}
         PLEASE REGISTER PIDOR
     {% endif %}
-    <a href="{% url 'shop' %}">GO SHOP</a>
+
 
 {% endblock %}

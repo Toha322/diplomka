@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Вы искали: {{ query }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center my-5">Всего найдено: {{ games|length }}</h1>
+</div>
+<div class="row">
+    {% for game in games %}
+    <div class="col-lg-3 col-sm-6">
+        <div class="item">
+            {% if game.preview %}
+            <a href="{% url 'product' game.pk %}">
+                <img src="{{ game.preview.url }}" alt="{{ game.name }}">
+            </a>
+            {% endif %}
+            <h4>{{ game.name }}<br><span>
+                {% for g in game.genre.all %}
+                    {{ g.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </span></h4>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

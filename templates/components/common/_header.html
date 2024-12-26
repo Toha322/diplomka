@@ -27,9 +27,14 @@
                     <ul class="nav">
                       <li><a href="{% url 'index' %}" class="active">Home</a></li>
                       <li><a href="{% url 'shop' %}">Our Shop</a></li>
-                      <li><a href="{% url 'product' %}">Product Details</a></li>
                       <li><a href="{% url 'contact' %}">Contact Us</a></li>
-                      <li><a href="#">Sign In</a></li>
+                        {% if request.user.is_authenticated %}
+                            <li><a href="{% url 'cart' %}">Shop Cart</a></li>
+                              <li><a href="{% url 'logout' %}">Logout</a></li>
+
+                        {% else %}
+                      <li><a href="{% url 'registration' %}">Sign In</a></li>
+                        {% endif %}
                   </ul>
                     <a class='menu-trigger'>
                         <span>Menu</span>

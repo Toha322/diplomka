@@ -43,7 +43,7 @@
                         <a href="{% url 'dell_from_cart' item.id %}">Remove from cart</a>
 
 
-                        <a href="{% url 'product' item.id %}">Detail</a>
+
                     </li>
                 </ul>
             </div>
@@ -51,6 +51,5 @@
     {% else %}
         PLEASE REGISTER PIDOR
     {% endif %}
-    <a href="{% url 'shop' %}">GO SHOP</a>
 
 {% endblock %}

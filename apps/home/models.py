@@ -127,14 +127,7 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
 
-class Like(models.Model):
-    game = models.OneToOneField(Game, on_delete=models.CASCADE, related_name='likes')
-    user = models.ManyToManyField(User, related_name='likes')
 
-
-class Dislike(models.Model):
-    game = models.OneToOneField(Game, on_delete=models.CASCADE, related_name='dislikes')
-    user = models.ManyToManyField(User, related_name='dislikes')
 
 
 
@@ -154,12 +147,11 @@ class GameLibrary(models.Model):
 
 
 class GameLibraryItem(models.Model):
-    library = models.ForeignKey(GameLibrary, on_delete=models.CASCADE,
-                                related_name='game_library_items', verbose_name='Библиотека')
+    library = models.ForeignKey(GameLibrary, on_delete=models.CASCADE,related_name='game_library_items', verbose_name='Библиотека')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, verbose_name='Игра')
     is_downloaded = models.BooleanField(default=False, verbose_name='Статус')
-    created_at = models.DateTimeField(auto_now_add=True)  # при создании добавляется время
-    updated_at = models.DateTimeField(auto_now=True)  # время меняется при изменении элемента
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.game.name

@@ -1,13 +1,12 @@
 from django.urls import path
 from .views import (
-    home_page, shop_page, product_detail, contact_page, cart, search, wish_list, library,
-    add_to_wishlibrary, wish_add_or_del, dell_from_wish,add_to_cart,dell_from_cart
+    home_page, shop_page, product_detail, contact_page, cart, search, wish_list,
+    add_to_wishlibrary, dell_from_wish,add_to_cart,dell_from_cart,wish_add_or_del
 )
 
 urlpatterns = [
     path('', home_page, name='index'),
     path('shop/', shop_page, name='shop'),
-    path('library/', library, name='library'),
     path('product/<int:pk>/', product_detail, name='product'),
     path('contact/', contact_page, name='contact'),
     path('cart/', cart, name='cart'),

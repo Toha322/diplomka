@@ -71,10 +71,18 @@ def shop_page(request, genre_name=None, studio_name=None):
 
 
 def product_detail(request, pk):
-    user_wish_item = models.WishLibraryItem.objects.filter(
-        library__user=request.user,
-        game_id=pk
-    ).first()
+    if  request.user.is_authenticated:
+        user_wish_item = models.WishLibraryItem.objects.filter(
+            library__user=request.user,
+            game_id=pk
+        ).first()
+        user_cart_item = models.GameLibraryItem.objects.filter(
+            library__user=request.user,
+            game_id=pk
+        ).first()
+    else:
+        user_wish_item = None
+        user_cart_item = None
 
     game = get_object_or_404(models.Game, pk=pk)
     comments = models.Comment.objects.filter(game=game)
@@ -88,10 +96,6 @@ def product_detail(request, pk):
     studios = game.studio.all()
     studio = game.studio.first()
     related_games = models.Game.objects.filter(studio__in=studios).exclude(id=game.id)[:5]
-    user_cart_item = models.GameLibraryItem.objects.filter(
-        library__user=request.user,
-        game_id=pk
-    ).first()
 
     if request.method == 'POST':
         form = CommentForm(data=request.POST)
@@ -139,8 +143,7 @@ def wish_list(request):
     return render(request, 'home/wana_buy.html',context)
 
 
-def library(request):
-    return render(request, 'home/library.html')
+
 
 
 def search(request):
@@ -203,7 +206,6 @@ def add_to_wishlibrary(request, game_id, user_id):
 def wish_add_or_del(request, library_item_id):
     item = models.WishLibraryItem.objects.get(pk=library_item_id)
     item.is_downloaded = not item.is_downloaded
-
     item.save()
     return redirect('wish_list')
 

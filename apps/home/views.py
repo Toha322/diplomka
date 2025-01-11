@@ -135,8 +135,13 @@ def cart(request):
 
 def wish_list(request):
     user = request.user
+    if request.user.is_authenticated:
+        items = models.WishLibraryItem.objects.filter(library__user=user)
+    else:
+        items = None
 
-    items = models.WishLibraryItem.objects.filter(library__user=user)
+
+
     context={
         'items':items
     }

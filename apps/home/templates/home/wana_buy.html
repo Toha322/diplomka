@@ -3,53 +3,45 @@
     Wishlist
 {% endblock %}
 {% block content %}
-    {% if user.is_authenticated %}
-        {% for item in request.user.wish_library.first.wish_library_items.all %}
-            {{ item }}
-        {% endfor %}
-        {% for item in request.user.wish_library.first.wish_library_items.all %}
-            <div class="item">
-                <ul>
-                    {% if item.game.preview %}
-                        <li>
-                            <a href="{% url 'product' item.game.id %}">
-                                <img src="{{ item.game.preview.url }}" alt="" class="templatemo-item">
-                            </a>
-                        </li>
-                    {% endif %}
-                    <li><h4>{{ item.game.name }}</h4><span>{{ item.game.sub_genre }}</span></li>
-                    <li><h4>Date Added</h4><span>{{ item.created_at|date:'d/m/Y' }}</span></li>
-                    <li><h4>Currently</h4>
-                        {% if item.is_downloaded %}
-                            <span>Buyed</span>
-                        {% else %}
-                            <span>not Buyed</span>
-                        {% endif %}
-                    </li>
+   {% if user.is_authenticated %}
+    {% for item in request.user.wish_library.first.wish_library_items.all %}
+        <div class="item">
+            <ul>
+                {% if item.game.preview %}
                     <li>
-                        <div
-                                class="main-border-button {% if not item.is_downloaded %} border-no-active {% endif %}
-
-                        ">
-                            {% if not item.is_downloaded %}
-                                <a href="{% url 'cart' item.id request.user.id %}">Buy</a>
-
-                            {% else %}
-
-                            {% endif %}
-
-
-                        </div>
-                        <a href="{% url 'dell_from_wish' item.id %}">Remove from wish</a>
-
-
+                        <a href="{% url 'product' item.game.id %}">
+                            <img src="{{ item.game.preview.url }}" alt="" class="templatemo-item">
+                        </a>
                     </li>
-                </ul>
-            </div>
-        {% endfor %}
-    {% else %}
-        PLEASE REGISTER PIDOR
-    {% endif %}
+                {% endif %}
+                <li><h4>{{ item.game.name }}</h4><span>{{ item.game.sub_genre }}</span></li>
+                <li><h4>Date Added</h4><span>{{ item.created_at|date:'d/m/Y' }}</span></li>
+                <li><h4>Currently</h4>
+                    {% if item.is_downloaded %}
+                        <span>Buyed</span>
+                    {% else %}
+                        <span>not Buyed</span>
+                    {% endif %}
+                </li>
+                <li>
+                    <div
+                            class="main-border-button {% if not item.is_downloaded %} border-no-active {% endif %}
+                    ">
+                        {% if not item.is_downloaded %}
+                            <a href="{% url 'cart' item.id user.id %}">Buy</a>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'dell_from_wish' item.id %}">Remove from wish</a>
+                </li>
+            </ul>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>
+        <b>Только авторизованные пользователи могут управлять списком желаемого...</b>
+        <a href="{% url 'login' %}">Войти</a>
+    </p>
+{% endif %}
 
 
 {% endblock %}

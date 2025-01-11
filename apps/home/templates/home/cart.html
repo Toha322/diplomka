@@ -43,13 +43,15 @@
                         <a href="{% url 'dell_from_cart' item.id %}">Remove from cart</a>
 
 
-
                     </li>
                 </ul>
             </div>
         {% endfor %}
     {% else %}
-        PLEASE REGISTER PIDOR
+        <p>
+            <b>Только авторизованные пользователи могут управлять списком желаемого...</b>
+            <a href="{% url 'login' %}">Войти</a>
+        </p>
     {% endif %}
 
 {% endblock %}

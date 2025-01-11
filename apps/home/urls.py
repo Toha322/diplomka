@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     home_page, shop_page, product_detail, contact_page, cart, search, wish_list,
-    add_to_wishlibrary, dell_from_wish,add_to_cart,dell_from_cart,wish_add_or_del
+    add_to_wishlibrary, dell_from_wish, add_to_cart, dell_from_cart, wish_add_or_del, update_cart_item
 )
 
 urlpatterns = [
@@ -11,10 +11,11 @@ urlpatterns = [
     path('contact/', contact_page, name='contact'),
     path('cart/', cart, name='cart'),
 
+    path('remove-from-cart/<int:library_item_id>/', dell_from_cart, name='dell_from_cart'),
     path('search/', search, name='search'),
     path('shop/genre/<slug:genre_name>/', shop_page, name='shop_by_genre'),
     path('shop/studio/<slug:studio_name>/', shop_page, name='shop_by_studio'),
-    path('wish/<int:library_item_id>/',wish_add_or_del, name='wish_add'),
+    path('wish/<int:library_item_id>/', wish_add_or_del, name='wish_add'),
     path('wishlist/', wish_list, name='wish'),
     path('wish/add/<int:game_id>/<int:user_id>/', add_to_wishlibrary, name='add_to_wish_lib'),
     path('wish/dell/<int:library_item_id>/', dell_from_wish, name='dell_from_wish'),
@@ -22,4 +23,3 @@ urlpatterns = [
     path('cart/dell/<int:library_item_id>/', dell_from_cart, name='dell_from_cart'),
     path('cart/add/<int:game_id>/<int:user_id>/', add_to_cart, name='add_to_cart'),
 ]
-

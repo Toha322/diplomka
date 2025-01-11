@@ -1,10 +1,11 @@
 from lib2to3.fixes.fix_input import context
-
+from django.http import JsonResponse
 from django.db.models import Max, Subquery, OuterRef
 from django.shortcuts import render, get_object_or_404, redirect
 from . import models
 from apps.home.forms import CommentForm
 from django.core.paginator import Paginator
+
 
 def home_page(request):
     games = models.Game.objects.prefetch_related('genre').all()[:12]
@@ -68,10 +69,8 @@ def shop_page(request, genre_name=None, studio_name=None):
     return render(request, 'home/shop.html', context)
 
 
-
-
 def product_detail(request, pk):
-    if  request.user.is_authenticated:
+    if request.user.is_authenticated:
         user_wish_item = models.WishLibraryItem.objects.filter(
             library__user=request.user,
             game_id=pk
@@ -89,7 +88,6 @@ def product_detail(request, pk):
     paginator = Paginator(comments, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
 
     genres = game.genre.all()
     tags = game.tags.all()
@@ -124,7 +122,6 @@ def product_detail(request, pk):
     return render(request, 'home/product_detail.html', context)
 
 
-
 def contact_page(request):
     return render(request, 'home/contact.html')
 
@@ -140,15 +137,10 @@ def wish_list(request):
     else:
         items = None
 
-
-
-    context={
-        'items':items
+    context = {
+        'items': items
     }
-    return render(request, 'home/wana_buy.html',context)
-
-
-
+    return render(request, 'home/wana_buy.html', context)
 
 
 def search(request):
@@ -183,11 +175,12 @@ def add_to_cart(request, game_id, user_id):
     return redirect('cart')
 
 
-
-
-
 def dell_from_cart(request, library_item_id):
     item = models.GameLibraryItem.objects.get(pk=library_item_id)
+    game = item.game
+    quantity = int(request.POST.get('quantity', 1))
+    game.downloads += quantity
+    game.save()
     item.delete()
     return redirect('cart')
 
@@ -219,3 +212,36 @@ def dell_from_wish(request, library_item_id):
     item = models.WishLibraryItem.objects.get(pk=library_item_id)
     item.delete()
     return redirect('wish')
+
+
+def update_cart_item(request, library_item_id):
+    if request.method == 'POST':
+        try:
+            item = models.GameLibraryItem.objects.get(id=library_item_id)
+        except models.GameLibraryItem.DoesNotExist:
+            return JsonResponse({'error': 'Item not found'}, status=404)
+        quantity = int(request.POST.get('quantity', 1))
+        total_price = item.default_price * quantity
+        cart, created = models.GameLibrary.objects.get_or_create(user=request.user)
+        cart_item = models.GameLibraryItem.objects.filter(cart=cart, game_library_item=item).first()
+        if cart_item:
+            cart_item.quantity = quantity
+            cart_item.total_price = total_price
+            cart_item.save()
+        else:
+            cart_item = models.GameLibraryItem.objects.create(
+                cart=cart,
+                game_library_item=item,
+                quantity=quantity,
+                total_price=total_price
+            )
+        return JsonResponse({
+            'message': 'Item updated in cart',
+            'item': {
+                'name': item.name,
+                'quantity': cart_item.quantity,
+                'total_price': cart_item.total_price
+            }
+        })
+
+    return redirect('cart')

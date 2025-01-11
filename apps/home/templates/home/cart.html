@@ -19,23 +19,30 @@
                     {% endif %}
                     <li><h4>{{ item.game.name }}</h4><span>{{ item.game.sub_genre }}</span></li>
                     <li><h4>Date Added</h4><span>{{ item.created_at|date:'d/m/Y' }}</span></li>
-                    <li><h4>Currently</h4>
-                        {% if item.is_downloaded %}
-                            <span>Buyed</span>
-                        {% else %}
-                            <span>not Buyed</span>
-                        {% endif %}
-                    </li>
+
                     <li>
                         <div
-                                class="main-border-button {% if not item.is_downloaded %} border-no-active {% endif %}
-
-                        ">
+                                class="main-border-button {% if not item.is_downloaded %} border-no-active {% endif %} ">
                             {% if not item.is_downloaded %}
-                                <a href="{% url 'dell_from_cart' item.id %}">Buy</a>
-
-                            {% else %}
-
+                                <form id="qty" action="{% url 'dell_from_cart' item.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="number" class="form-control" id="quantity" name="quantity" value="1"
+                                           min="0" style="width: auto; display: inline-block;"
+                                           oninput="calculatePrice()">
+                                    <button type="submit"><i class="fa fa-shopping-bag"></i> BUY</button>
+                                </form>
+                                <div>
+                                    Total Price: <span id="totalPrice">$0</span>
+                                </div>
+                                <script>
+                                    const unitPrice = {{ item.game.default_price }};
+                                    function calculatePrice() {
+                                        const quantity = document.getElementById('quantity').value;
+                                        const totalPrice = quantity * unitPrice;
+                                        document.getElementById('totalPrice').textContent = "$" + totalPrice.toFixed(2);
+                                    }
+                                    window.onload = calculatePrice;
+                                </script>
                             {% endif %}
 
 

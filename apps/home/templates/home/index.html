@@ -103,11 +103,13 @@
                                 <a href="{% url 'product' game.pk %}"></a>
 
                                 {% if game.preview %}
-                                    <img src="{{ game.preview.url }}" alt="Game preview">
+                                    <a href="{% url 'product' game.pk %}">
+                                        <img src="{{ game.preview.url }}" alt="Game preview">
+                                    </a>
                                 {% else %}
                                     <p>No preview available</p>
                                 {% endif %}
-                                <span class="price"><em>${{ game.current_price }}</em>${{ game.current_price }}</span>
+                                <span class="price"><em>${{ game.current_price }}</em>${{ game.default_price }}</span>
 
                             </div>
                             <div class="down-content">
@@ -119,11 +121,11 @@
 
 
                                 <h4>{{ game.name }}</h4>
-                            {% if user.is_authenticated   %}
-                                <a href="{% url 'product' game.pk %}"><i class="fa fa-shopping-bag"></i></a>
-                            {% else %}
-                                <a href="{% url 'login'  %}"><i class="fa fa-shopping-bag"></i></a>
-                            {% endif %}
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'product' game.pk %}"><i class="fa fa-shopping-bag"></i></a>
+                                {% else %}
+                                    <a href="{% url 'login' %}"><i class="fa fa-shopping-bag"></i></a>
+                                {% endif %}
 
                             </div>
 
